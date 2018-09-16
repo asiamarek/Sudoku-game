@@ -13,9 +13,8 @@ import javafx.scene.input.MouseEvent;
 
 import static java.lang.Character.isDigit;
 
-
 public class Controller {
-
+    
     @FXML
     private ResourceBundle resources;
 
