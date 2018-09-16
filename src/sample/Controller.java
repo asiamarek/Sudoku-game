@@ -1255,8 +1255,6 @@ public class Controller {
         assert f386 != null : "fx:id=\"f386\" was not injected: check your FXML file 'sample.fxml'.";
         assert f387 != null : "fx:id=\"f387\" was not injected: check your FXML file 'sample.fxml'.";
         assert f388 != null : "fx:id=\"f388\" was not injected: check your FXML file 'sample.fxml'.";
-
-
     }
 
 }
