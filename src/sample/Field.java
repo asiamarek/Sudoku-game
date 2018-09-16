@@ -5,13 +5,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
-
 import java.beans.*;
 import java.io.Serializable;
 
 import static java.lang.Character.isDigit;
-
-
 
 public class Field implements Serializable{
 
@@ -25,10 +22,8 @@ public class Field implements Serializable{
     private String orStyle;
     private int collisions;
 
-
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private VetoableChangeSupport vcs = new VetoableChangeSupport(this);
-
 
     public Field(int value, int colorId, int column, int row, TextField txtField, Field[] allFields){
         this.row=row;
@@ -47,17 +42,13 @@ public class Field implements Serializable{
 
         collisions=0;
 
-
         valueChangeController cc= new valueChangeController(this);
         addVetoableChangeListener(cc);
 
         collisionsChangeController cc2= new collisionsChangeController(allFields.length-1);
         addVetoableChangeListener(cc2);
 
-
         this.txtField.textProperty().addListener(new textChanged());
-
-
     }
 
     private class textChanged implements ChangeListener<String>{
@@ -86,14 +77,12 @@ public class Field implements Serializable{
                 });
                 fixCollisions(temp2);
             }
-
         }
     }
 
-
-    public synchronized void addVetoableChangeListener (VetoableChangeListener lst)
-    { vcs.addVetoableChangeListener(lst); }
-
+    public synchronized void addVetoableChangeListener (VetoableChangeListener lst){ 
+        vcs.addVetoableChangeListener(lst); 
+    }
 
     public synchronized void setValue(int newValue )throws PropertyVetoException {
         int oldValue=value;
@@ -108,8 +97,6 @@ public class Field implements Serializable{
         collisions=newValue;
         pcs.firePropertyChange("collisions",oldValue,newValue);
     }
-
-
 
     static class valueChangeController implements VetoableChangeListener{
 
@@ -129,20 +116,18 @@ public class Field implements Serializable{
             }
             int myId=f.row*9+f.column;
             for(int i=0; i<f.allFields.length; i++){
-                if(i==myId)
+                if(i == myId)
                     continue;
-                if(f.allFields[i].getValue()!=val)
+                if(f.allFields[i].getValue() != val)
                     continue;
-                if(f.allFields[i].getRow()==f.row || f.allFields[i].getColumn()==f.column
-                        || f.allFields[i].getColorId()==f.colorId){
+                if(f.allFields[i].getRow() == f.row || f.allFields[i].getColumn() == f.column
+                        || f.allFields[i].getColorId() == f.colorId){
                     if(f.allFields[i].getIsFixed())
                         throw new PropertyVetoException("wrongVal", evt);
                 }
             }
-
         }
     }
-
 
     public synchronized int getRow(){
         return row;
@@ -160,11 +145,9 @@ public class Field implements Serializable{
         return value;
     }
 
-
     public synchronized boolean getIsFixed(){
         return isFixed;
     }
-
 
     public synchronized int getCollisions(){
         return collisions;
@@ -190,30 +173,26 @@ public class Field implements Serializable{
     }
 
     private void checkCollisions(){
-        int myId=row*9+column;
+        int myId=row * 9 + column;
         int howMany=0;
         for(int i=0; i<allFields.length; i++){
-            if(i==myId)
+            if(i == myId)
                 continue;
-            if(allFields[i].getValue()!=value)
+            if(allFields[i].getValue() != value)
                 continue;
-            if(allFields[i].getRow()==row || allFields[i].getColumn()==column
-                    || allFields[i].getColorId()==colorId){
+            if(allFields[i].getRow() == row || allFields[i].getColumn() == column
+                    || allFields[i].getColorId() == colorId){
                 if(!allFields[i].getIsFixed()){
                     howMany++;
                     try {
-                        allFields[i].setCollisions(allFields[i].getCollisions()+1);
+                        allFields[i].setCollisions(allFields[i].getCollisions() + 1);
                     } catch (PropertyVetoException e) {}
                 }
             }
         }
         try {
             setCollisions(howMany);
-        } catch (PropertyVetoException e) {
-
-        }
-
-
+        } catch (PropertyVetoException e) {}
     }
 
     private void fixCollisions(int oldValue){
@@ -221,17 +200,17 @@ public class Field implements Serializable{
             setCollisions(0);
         } catch (PropertyVetoException e) {}
 
-        if(oldValue==-1)
+        if(oldValue == -1)
             return;
 
-        int myId=row*9+column;
+        int myId=row * 9 + column;
         for(int i=0; i<allFields.length; i++){
-            if(i==myId)
+            if(i == myId)
                 continue;
-            if(allFields[i].getValue()!=oldValue)
+            if(allFields[i].getValue() != oldValue)
                 continue;
-            if(allFields[i].getRow()==row || allFields[i].getColumn()==column
-                    || allFields[i].getColorId()==colorId){
+            if(allFields[i].getRow() == row || allFields[i].getColumn() == column
+                    || allFields[i].getColorId() == colorId){
                 if(!allFields[i].getIsFixed()){
                     try {
                         allFields[i].setCollisions(allFields[i].getCollisions()-1);
@@ -241,19 +220,19 @@ public class Field implements Serializable{
         }
     }
 
-
     private class collisionsChangeController implements VetoableChangeListener {
         int limit;
         public collisionsChangeController(int limit) {
-            this.limit=limit;
+            this.limit = limit;
         }
 
         @Override
         public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
-            if(!evt.getPropertyName().equals("collisions")) return;
-            if((int)evt.getNewValue()>limit)
+            if(!evt.getPropertyName().equals("collisions")) 
+                return;
+            if((int)evt.getNewValue() > limit)
                 throw new PropertyVetoException("tooMuch", evt);
-            if((int)evt.getNewValue()==0)
+            if((int)evt.getNewValue() == 0)
                 changeFontToOriginal();
             else
                 changeFontToYellow();
